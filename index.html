@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1a5c2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Цифровая биолаборатория</title>
+<style>
+:root {
+  --bg: #f7f9f4;
+  --surface: #ffffff;
+  --primary: #1a5c2e;
+  --primary-soft: #2d7a45;
+  --accent: #4caf50;
+  --accent-light: #e8f5e9;
+  --text: #1c2b1c;
+  --muted: #6b7c6b;
+  --border: #dce8dc;
+  --radius: 20px;
+  --shadow: 0 8px 30px rgba(26, 92, 46, 0.08);
+  --shadow-sm: 0 2px 12px rgba(26, 92, 46, 0.06);
+  --safe: env(safe-area-inset-bottom, 20px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: var(--surface);
+  padding: 18px 20px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.logo {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  object-fit: contain;
+  background: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.brand h1 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+.brand .slogan {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 2px;
+  font-weight: 500;
+}
+.search-box {
+  position: relative;
+}
+.search-box input {
+  width: 100%;
+  padding: 13px 16px 13px 46px;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  font-size: 1rem;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.search-box input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.15);
+  background: #fff;
+}
+.search-box input::placeholder { color: #9aab9a; }
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.15rem;
+  opacity: 0.6;
+}
+
+/* ===== NAV ===== */
+.nav {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.nav.show { display: flex; }
+.back-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 14px;
+  background: var(--accent-light);
+  color: var(--primary);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s;
+}
+.back-btn:active { background: #c8e6c9; }
+.crumbs {
+  font-size: 0.88rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crumbs span { color: var(--primary); font-weight: 600; }
+
+/* ===== MAIN ===== */
+.main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 20px calc(100px + var(--safe));
+}
+
+/* Home hero */
+.hero {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.hero-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+.hero-sub {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+/* Class buttons */
+.class-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.class-btn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  padding: 20px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .18s;
+  box-shadow: var(--shadow-sm);
+}
+.class-btn:active {
+  transform: scale(0.96);
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.class-btn .num {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+}
+.class-btn .lbl {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.card:active {
+  transform: scale(0.985);
+  border-color: var(--accent);
+  background: #fafffa;
+}
+.card h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+.card .arrow {
+  color: var(--accent);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* Section title */
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 16px;
+  letter-spacing: -0.3px;
+}
+
+/* Equipment chips */
+.chips-wrap {
+  margin-bottom: 24px;
+}
+.chips-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.chips-hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.chip {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  user-select: none;
+  transition: all .15s;
+  font-weight: 500;
+}
+.chip.on {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(26, 92, 46, 0.25);
+}
+.chip.any {
+  border-color: var(--accent);
+  color: var(--primary-soft);
+  font-weight: 600;
+}
+.chip.any.on {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* Primary button */
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--primary), var(--primary-soft));
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(26, 92, 46, 0.3);
+  transition: opacity .15s, transform .12s;
+}
+.btn:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+/* Experiment card */
+.exp-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all .15s;
+  border-left: 5px solid var(--accent);
+}
+.exp-card:active {
+  transform: scale(0.985);
+  background: #fafffa;
+}
+.exp-card h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.exp-card .meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tag {
+  background: var(--accent-light);
+  color: var(--primary-soft);
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+/* Detail */
+.detail-head {
+  margin-bottom: 24px;
+}
+.detail-head h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.detail-head .path {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.block-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 28px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.block-title::before {
+  content: "";
+  width: 5px;
+  height: 20px;
+  background: var(--accent);
+  border-radius: 3px;
+}
+.equip-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.equip-tag {
+  background: var(--accent-light);
+  color: var(--primary);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+.step {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.step-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.step-num {
+  width: 30px;
+  height: 30px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-text {
+  font-size: 0.98rem;
+  flex: 1;
+  padding-top: 3px;
+}
+.photo-place {
+  background: linear-gradient(145deg, #eef7ee, #dcedc8);
+  border: 2px dashed #81c784;
+  border-radius: 14px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-soft);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.photo-place .ico {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+  opacity: 0.8;
+}
+.result-box {
+  background: #e8f5e9;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 20px;
+  border-left: 5px solid var(--accent);
+  font-size: 0.95rem;
+}
+.result-box strong { color: var(--primary); }
+.note-box {
+  background: #fff8e1;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 12px;
+  border-left: 5px solid #ffb300;
+  font-size: 0.93rem;
+}
+
+/* Reviews */
+.reviews-head {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 18px;
+}
+.review-form {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+.review-form input,
+.review-form textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  font-size: 0.98rem;
+  margin-bottom: 12px;
+  font-family: inherit;
+  outline: none;
+  background: var(--bg);
+  transition: border-color .2s;
+}
+.review-form input:focus,
+.review-form textarea:focus {
+  border-color: var(--accent);
+  background: #fff;
+}
+.review-form textarea { min-height: 100px; resize: vertical; }
+.err-msg {
+  color: #c62828;
+  font-size: 0.88rem;
+  margin-bottom: 10px;
+  display: none;
+  padding: 8px 12px;
+  background: #ffebee;
+  border-radius: 10px;
+}
+.success-msg {
+  color: #2e7d32;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  display: none;
+  padding: 8px 12px;
+  background: #e8f5e9;
+  border-radius: 10px;
+}
+.review-item {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.review-item .author {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 0.95rem;
+}
+.review-item .date {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.review-item .body {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 28px 20px 40px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+}
+.footer a {
+  color: var(--primary-soft);
+  text-decoration: none;
+  font-weight: 500;
+}
+.footer .creator {
+  margin: 8px 0 4px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Empty & utils */
+.empty {
+  text-align: center;
+  padding: 50px 24px;
+  color: var(--muted);
+}
+.empty .ico {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+.hidden { display: none !important; }
+.count-badge {
+  background: var(--accent-light);
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-left: 8px;
+}
+
+/* Reviews entry on home */
+.action-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all .15s;
+}
+.action-card:active {
+  transform: scale(0.985);
+  border-color: var(--accent);
+}
+.action-card .ico {
+  width: 48px;
+  height: 48px;
+  background: var(--accent-light);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.action-card .txt h3 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.action-card .txt p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <img class="logo" id="logoImg" alt="Логотип" src="data:image/jpeg;base64,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">
+    <div class="brand">
+      <h1>Цифровая биолаборатория</h1>
+      <div class="slogan">Опыт — лучший учитель</div>
+    </div>
+  </div>
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="search" id="search" placeholder="Найти опыт..." autocomplete="off">
+  </div>
+</header>
+
+<nav class="nav" id="nav">
+  <button class="back-btn" id="back">←</button>
+  <div class="crumbs" id="crumbs"></div>
+</nav>
+
+<main class="main" id="app"></main>
+
+<footer class="footer" id="footer">
+  <div>Цифровая биолаборатория</div>
+  <div class="creator">Создатель: Миллер Екатерина</div>
+  <div><a href="mailto:yekaterina.miller.07@internet.ru">yekaterina.miller.07@internet.ru</a></div>
+</footer>
+
+<script>
+/* ===== LOGO ===== */
+document.getElementById("logoImg").src = "data:image/jpeg;base64," + "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";
+
+/* ===== DATA (same structure) ===== */
+const DATA = {
+"5":{title:"5 класс",topics:[
+{name:"Клеточное строение организмов",subs:[{name:"Строение растительной клетки",experiments:[{id:"5-1",name:"Приготовление микропрепарата кожицы лука",equip:["микроскоп","предметное стекло","покровное стекло","луковица","пипетка","препаровальная игла","вода","раствор йода","фильтровальная бумага"],steps:["Нанести пипеткой 1–2 капли раствора йода (или воды) на предметное стекло.","Препаровальной иглой снять тонкий прозрачный слой кожицы с внутренней поверхности чешуи лука.","Поместить кожицу в каплю на предметном стекле и расправить иглой.","Аккуратно накрыть покровным стеклом, избегая пузырьков воздуха.","Убрать излишки жидкости фильтровальной бумагой.","Рассмотреть препарат под микроскопом при малом, затем при большом увеличении.","Зарисовать клетки, обозначить оболочку, цитоплазму, ядро, вакуоль."],result:"Плотно прилегающие друг к другу клетки с чёткими оболочками, внутри — ядро и вакуоль."}]}]},
+{name:"Многообразие организмов",subs:[{name:"Грибы",experiments:[{id:"5-2",name:"Плесень мукора",equip:["микроскоп","предметное стекло","покровное стекло","кусок хлеба","контейнер с крышкой","препаровальная игла"],steps:["За 3–5 дней до урока поместить кусок хлеба во влажный закрытый контейнер и оставить в тёплом месте.","В день работы рассмотреть плесень невооружённым глазом: белый пушистый налёт.","Приготовить микропрепарат: на предметное стекло нанести каплю воды, препаровальной иглой перенести небольшой кусочек плесени, накрыть покровным стеклом.","Рассмотреть под микроскопом: видны нити мицелия (гифы) и округлые головки со спорами (спорангии).","Зарисовать увиденное."],result:"Ветвящиеся нити (одна многоядерная клетка у мукора) и шаровидные спорангии на концах гиф."},{id:"5-3",name:"Дрожжи",equip:["микроскоп","предметное стекло","покровное стекло","сухие или прессованные дрожжи","сахар","тёплая вода","стакан","пипетка"],steps:["Развести щепотку дрожжей в тёплой воде с добавлением щепотки сахара.","Оставить на 15–20 минут в тёплом месте.","Пипеткой нанести каплю суспензии на предметное стекло, накрыть покровным стеклом.","Рассмотреть под микроскопом при большом увеличении.","Найти клетки овальной формы, некоторые — с маленькими «выростами» (почками)."],result:"Овальные клетки дрожжей, часть из них почкуется.",note:"В стакане с дрожжами, сахаром и тёплой водой через 15–20 минут появляются пузырьки газа — углекислый газ, продукт брожения."}]}]},
+{name:"Организмы и среда обитания",subs:[{name:"Приспособления организмов к среде обитания",experiments:[{id:"5-4",name:"Наблюдение за сезонными изменениями (экскурсия)",equip:["блокнот","карандаш","лупа"],steps:["Выйти на школьный двор или ближайший парк/лес.","Отметить, какие растения цветут, какие плодоносят, у каких опадают листья.","Записать, каких животных/насекомых видно, как они себя ведут.","Зарисовать 2–3 объекта.","Сделать вывод: какие изменения произошли и с чем они связаны (температура, свет, влага)."],result:"Наблюдение сезонных изменений и их связь с факторами среды."}]}]}
+]},
+"6":{title:"6 класс",topics:[
+{name:"Семя",subs:[{name:"Условия прорастания семян",experiments:[{id:"6-1",name:"Прорастание семян (условия)",equip:["семена фасоли или гороха","стаканы","вода","холодильник"],steps:["В три стакана положить одинаковое количество семян (по 5–7 штук).","Стакан 1 (вода): налить немного воды, чтобы она смачивала семена, но не покрывала их.","Стакан 2 (без воды): оставить сухим.","Стакан 3 (без воздуха): залить семена водой полностью.","Все стаканы оставить при комнатной температуре.","Через 5–7 дней проверить результат."],result:"Проросли только семена в стакане 1. В стакане 2 нет воды, в стакане 3 семена погибли без кислорода.",note:"Дополнительно (температура): два стакана с влажными семенами — один при комнатной температуре, другой в холодильнике. Проросшие — только в тепле."}]}]},
+{name:"Корень",subs:[{name:"Зоны корня",experiments:[{id:"6-2",name:"Строение корня, корневые волоски",equip:["проросток фасоли или пшеницы","микроскоп","лупа","предметное стекло","пипетка","вода"],steps:["Вырастить проросток во влажной салфетке за 5–7 дней.","Рассмотреть корень невооружённым глазом: найти кончик корня, зону растяжения, зону с волосками.","Положить корень на предметное стекло в каплю воды, рассмотреть под лупой или микроскопом (малое увеличение).","Найти тонкие выросты — корневые волоски.","Зарисовать корень с зонами."],result:"На участке корня чуть выше кончика — множество тонких волосковидных выростов."}]}]},
+{name:"Побег",subs:[{name:"Почка: строение, виды",experiments:[{id:"6-3",name:"Строение почки",equip:["ветки тополя, сирени или берёзы","лупа","препаровальная игла","скальпель"],steps:["Рассмотреть почки на ветке: расположение (очередное, супротивное), размер, форму.","Отделить одну почку иглой.","Разрезать почку вдоль скальпелем.","Рассмотреть срез под лупой.","Найти почечные чешуи, зачаточные листья, конус нарастания (вегетативная почка) или зачатки цветков (генеративная).","Зарисовать продольный срез почки."],result:"Плотные наружные чешуи и внутри — маленькие зелёные зачаточные листья."}]},{name:"Стебель: строение, функции",experiments:[{id:"6-4",name:"Строение стебля (поперечный срез)",equip:["ветка липы, тополя или сирени","лупа","скальпель"],steps:["Сделать поперечный срез ветки скальпелем (тонкий, 1–2 мм).","Рассмотреть срез под лупой.","Найти: пробку (тёмный наружный слой), луб (светлый слой под пробкой), камбий (тонкий слой), древесину (основная масса), сердцевину (центр).","Зарисовать и подписать слои."],result:"Чёткие концентрические слои разного цвета."}]},{name:"Клеточное строение листа",experiments:[{id:"6-5",name:"Клеточное строение листа",equip:["микроскоп","предметное стекло","покровное стекло","лист традесканции или лука","скальпель","пипетка","вода"],steps:["Сделать тонкий срез мякоти листа (или снять кожицу с нижней стороны листа).","Поместить срез в каплю воды на предметное стекло, накрыть покровным.","Рассмотреть под микроскопом.","Найти клетки кожицы (прозрачные, плотно прилегающие) и клетки мякоти (с зелёными хлоропластами).","Зарисовать."],result:"Бесцветные клетки кожицы и зелёные клетки мякоти с хлоропластами."}]}]},
+{name:"Жизнедеятельность растений",subs:[{name:"Фотосинтез",experiments:[{id:"6-6",name:"Фотосинтез: крахмал на свету",equip:["комнатное растение (герань, традесканция)","тёмная бумага или фольга","спирт","раствор йода","пробирка","водяная баня"],steps:["Закрыть часть листа с двух сторон фольгой (или тёмной бумагой).","Поставить растение на свет на 6–8 часов.","Срезать лист. Снять фольгу.","Обесцветить лист: опустить в кипящий спирт на водяной бане (осторожно, огнеопасно!) или обработать горячей водой.","Промыть лист водой, залить раствором йода.","Сравнить: часть, бывшая на свету, посинеет (крахмал); часть под фольгой останется светлой."],result:"Посинение только на освещённом участке листа.",note:"Упрощённый вариант (без спирта): йодную пробу можно сделать на срезе клубня картофеля, выращенного на свету и в темноте."}]},{name:"Дыхание растений",experiments:[{id:"6-7",name:"Дыхание растений",equip:["семена гороха","банка с крышкой","известковая вода","трубочка"],steps:["Замочить семена на сутки для набухания.","Поместить набухшие семена в банку, закрыть крышкой.","Оставить на 6–12 часов в тёплом месте.","Открыть банку, опустить в неё трубочку и продуть воздух из банки через трубочку в пробирку с известковой водой (или просто прилить известковую воду в банку и взболтать).","Наблюдать помутнение известковой воды."],result:"Помутнение известковой воды — признак углекислого газа, выделенного дышащими семенами."}]},{name:"Испарение воды (транспирация)",experiments:[{id:"6-8",name:"Испарение воды листьями",equip:["комнатное растение или ветка с листьями","прозрачный полиэтиленовый пакет","нитка"],steps:["Надеть пакет на ветку с листьями (или на часть растения).","Завязать пакет у основания, чтобы он был герметичен.","Поставить растение на свет (не под прямое солнце).","Через 2–4 часа проверить: на внутренней стороне пакета появятся капли воды."],result:"Капли конденсата на пакете — испарившаяся вода."}]}]},
+{name:"Размножение растений",subs:[{name:"Вегетативное размножение",experiments:[{id:"6-9",name:"Вегетативное размножение (черенкование)",equip:["комнатное растение (традесканция, герань)","ножницы","стакан с водой"],steps:["Срезать побег с 3–4 листьями (черенок) под углом.","Удалить нижние листья.","Поставить черенок в стакан с водой.","Поставить в светлое место.","Через 1–2 недели наблюдать образование корней.","Когда корни достигнут 2–3 см, пересадить в почву."],result:"Образование белых корешков на нижней части черенка."}]}]},
+{name:"Цветок и плод",subs:[{name:"Цветок: строение",experiments:[{id:"6-10",name:"Строение цветка",equip:["крупный цветок (вишня, яблоня, петуния, лилия)","лупа","препаровальная игла"],steps:["Рассмотреть цветок снаружи: найти цветоножку, цветоложе, чашелистики, лепестки.","Удалить чашелистики и лепестки иглой.","Найти тычинки (тычиночная нить + пыльник) и пестик (рыльце, столбик, завязь).","Разрезать завязь вдоль, найти семязачатки.","Зарисовать и подписать части."],result:"Все части цветка, особенно завязь с семязачатками внутри."}]},{name:"Плоды: виды, значение",experiments:[{id:"6-11",name:"Строение и классификация плодов",equip:["разные плоды: яблоко, помидор, огурец, орех, семечко подсолнечника, жёлудь","лупа"],steps:["Рассмотреть каждый плод: сочный или сухой, односемянный или многосемянный, раскрывающийся или нет.","Разрезать сочные плоды, найти семена.","Разломить орех, найти ядро (семя).","Распределить плоды по группам: сочные/сухие, односемянные/многосемянные.","Записать в таблицу."],result:"Различия в строении плодов и количестве семян."}]}]}
+]},
+"7":{title:"7 класс",topics:[
+{name:"Водоросли",subs:[{name:"Зелёные водоросли",experiments:[{id:"7-1",name:"Одноклеточные водоросли",equip:["микроскоп","предметное стекло","покровное стекло","вода из пруда/аквариума","пипетка"],steps:["Взять воду из пруда или аквариума, где вода позеленела.","Пипеткой нанести каплю на предметное стекло, накрыть покровным.","Рассмотреть под микроскопом при большом увеличении.","Найти одноклеточные зелёные организмы (хламидомонада — овальная с двумя жгутиками, хлорелла — мелкая круглая)."],result:"Мелкие зелёные клетки, некоторые подвижные.",note:"Гарантировать наличие именно хламидомонады нельзя, но зелёные одноклеточные водоросли в «зацветшей» воде почти всегда есть."}]},{name:"Многоклеточные зелёные водоросли",experiments:[{id:"7-2",name:"Спирогира",equip:["микроскоп","предметное стекло","покровное стекло","тина из пруда","пипетка","вода"],steps:["Собрать тину в пруду/реке (ярко-зелёные скользкие нити).","Поместить небольшой пучок на предметное стекло в каплю воды, накрыть покровным.","Рассмотреть под малым, затем большим увеличением.","Найти длинные неветвящиеся нити из цилиндрических клеток. В клетках — спирально закрученные ленты хлоропластов."],result:"Нити из соединённых торцами клеток, внутри — спиральные зелёные структуры."}]}]},
+{name:"Высшие споровые растения",subs:[{name:"Мхи",experiments:[{id:"7-3",name:"Строение мха (кукушкин лён)",equip:["микроскоп","лупа","живые растения кукушкина льна","предметное стекло","пипетка"],steps:["Рассмотреть растение: стебель, листья (мелкие, узкие), ризоиды (тонкие нити у основания).","Найти на верхушке стебля коробочку на ножке (если есть).","Поместить лист мха на предметное стекло в каплю воды, рассмотреть под микроскопом (или лупой).","Отметить: лист однослойный, без жилки (или с узкой жилкой), клетки мелкие."],result:"Простое строение листа, отсутствие сложных тканей."}]},{name:"Папоротники",experiments:[{id:"7-4",name:"Строение папоротника",equip:["живой или высушенный папоротник","лупа","препаровальная игла"],steps:["Рассмотреть растение: корневище (под землёй/у основания), листья (вайи), молодые завитые листья («улитки»).","Перевернуть зрелый лист, найти на нижней стороне мелкие коричневые бугорки — сорусы (скопления спорангиев).","Рассмотреть сорус под лупой.","Зарисовать."],result:"Сорусы на нижней стороне листа — признаки спорового размножения."}]}]},
+{name:"Голосеменные",subs:[{name:"Хвойные: строение, размножение",experiments:[{id:"7-5",name:"Хвоя и шишки хвойных",equip:["ветки сосны, ели, лиственницы","шишки (сосны, ели)","лупа"],steps:["Сравнить хвою разных пород: у сосны — длинная, в пучках по 2; у ели — короткая, по одной; у лиственницы — мягкая, опадающая.","Рассмотреть шишку: у сосны — деревянистая, с чешуями; у ели — более тонкие чешуи.","Найти под чешуями семена (если шишка зрелая).","Зарисовать хвою и шишку."],result:"Различия в форме хвои и строении шишек."}]}]},
+{name:"Грибы",subs:[{name:"Шляпочные грибы",experiments:[{id:"7-6",name:"Шляпочный гриб",equip:["свежий гриб (шампиньон или лесной)","лупа","препаровальная игла"],steps:["Рассмотреть плодовое тело: шляпка, ножка.","Перевернуть шляпку: найти пластинки (у шампиньона, сыроежки) или трубки (у белого гриба, подберёзовика).","Осторожно отделить часть пластинки/трубочки, рассмотреть под лупой.","Найти споры (тёмный порошок на пластинках).","Разрезать ножку вдоль, отметить плотность."],result:"Пластинчатый или трубчатый гименофор, споры."}]},{name:"Плесневые грибы и дрожжи",experiments:[{id:"7-7a",name:"Плесень мукора (повтор 5 класса)",equip:["микроскоп","предметное стекло","покровное стекло","кусок хлеба","контейнер с крышкой","препаровальная игла"],steps:["За 3–5 дней до урока поместить кусок хлеба во влажный закрытый контейнер и оставить в тёплом месте.","В день работы рассмотреть плесень невооружённым глазом: белый пушистый налёт.","Приготовить микропрепарат: на предметное стекло нанести каплю воды, препаровальной иглой перенести небольшой кусочек плесени, накрыть покровным стеклом.","Рассмотреть под микроскопом: видны нити мицелия (гифы) и округлые головки со спорами (спорангии).","Зарисовать увиденное."],result:"Ветвящиеся нити и шаровидные спорангии на концах гиф."},{id:"7-7b",name:"Дрожжи (повтор 5 класса)",equip:["микроскоп","предметное стекло","покровное стекло","сухие или прессованные дрожжи","сахар","тёплая вода","стакан","пипетка"],steps:["Развести щепотку дрожжей в тёплой воде с добавлением щепотки сахара.","Оставить на 15–20 минут в тёплом месте.","Пипеткой нанести каплю суспензии на предметное стекло, накрыть покровным стеклом.","Рассмотреть под микроскопом при большом увеличении.","Найти клетки овальной формы, некоторые — с маленькими «выростами» (почками)."],result:"Овальные клетки дрожжей, часть из них почкуется."}]}]},
+{name:"Лишайники",subs:[{name:"Строение лишайников",experiments:[{id:"7-8",name:"Лишайники",equip:["лишайники с коры деревьев или камней","микроскоп","лупа","скальпель"],steps:["Собрать лишайники с коры/камней.","Рассмотреть внешний вид: накипные (корка), листоватые (пластинки), кустистые (веточки).","Сделать тонкий срез листоватого лишайника, рассмотреть под микроскопом.","Найти верхний коровый слой, зелёный слой (водоросли), сердцевину (грибные нити)."],result:"Слоистое строение — признак симбиоза гриба и водоросли."}]}]},
+{name:"Бактерии",subs:[{name:"Роль бактерий в жизни человека",experiments:[{id:"7-9",name:"Молочнокислые бактерии",equip:["микроскоп","предметное стекло","покровное стекло","простокваша или кефир","пипетка","вода"],steps:["Нанести каплю простокваши на предметное стекло, разбавить каплей воды, накрыть покровным.","Рассмотреть под микроскопом при большом увеличении (можно с иммерсией, если есть).","Найти мелкие вытянутые палочки — молочнокислые бактерии."],result:"Мелкие палочковидные клетки (могут быть одиночные или цепочками).",note:"Без окраски видно плохо, но при большом увеличении и хорошем освещении палочки различимы."}]}]},
+{name:"Покрытосеменные",subs:[{name:"Определение растений",experiments:[{id:"7-10",name:"Определение растений по ключу",equip:["живые растения с улицы","определитель","лупа"],steps:["Взять растение целиком (или ветку с листьями и цветками/плодами).","По ключу последовательно выбирать признаки: дерево/трава, листорасположение, форма листа, наличие цветков/плодов.","На каждом шаге ключа выбирать одну из двух альтернатив (теза/антитеза).","Дойти до названия семейства/рода/вида.","Записать результат."],result:"Работа с реальным растением, а не картинкой."}]}]}
+]},
+"8":{title:"8 класс",topics:[
+{name:"Одноклеточные животные",subs:[{name:"Простейшие",experiments:[{id:"8-1",name:"Инфузория-туфелька",equip:["микроскоп","предметное стекло","покровное стекло","вода из пруда/аквариума","пипетка","вата"],steps:["Взять воду из пруда или приготовить культуру на банановой корке за 3–5 дней.","Нанести каплю на предметное стекло. Можно добавить маленький кусочек ваты, чтобы замедлить движение.","Накрыть покровным, рассмотреть под малым, затем большим увеличением.","Найти крупные клетки, похожие на туфельку, с ресничками по краю."],result:"Движение клетки, реснички, сократительные вакуоли."},{id:"8-2",name:"Амёба, эвглена",equip:["микроскоп","предметное стекло","покровное стекло","вода из пруда/аквариума","пипетка"],steps:["Взять воду из пруда/аквариума.","Рассмотреть каплю под микроскопом.","Найти амёбу: бесформенный комочек, медленно выпускающий ложноножки. Эвглена: овальная, зелёная, с жгутиком, быстро движется."],result:"Наличие амёбы и/или эвглены (гарантировать нельзя, но в «зацветшей» воде часто встречаются)."}]}]},
+{name:"Кишечнополостные",subs:[{name:"Гидра: строение, жизнедеятельность",experiments:[{id:"8-3",name:"Гидра",equip:["микроскоп","лупа","вода из пруда/реки с растениями","предметное стекло","пипетка"],steps:["Собрать в пруду растения с прикреплёнными гидрами (летом).","Поместить гидру в каплю воды на предметное стекло (или в чашку Петри).","Рассмотреть под лупой или малым увеличением микроскопа: тело-стебелёк, щупальца, подошва.","Наблюдать реакцию на прикосновение иглой — сокращение."],result:"Щупальца, сокращение тела.",note:"Только тёплый сезон."}]}]},
+{name:"Черви",subs:[{name:"Кольчатые черви",experiments:[{id:"8-4",name:"Дождевой червь",equip:["живой дождевой червь","лупа","влажная бумага","стеклянная банка"],steps:["Найти червя после дождя или выкопать в почве.","Поместить на влажную бумагу.","Рассмотреть: сегменты тела, поясок (утолщение), щетинки (под лупой).","Наблюдать движение: сокращение и вытягивание тела.","Проверить реакцию на прикосновение."],result:"Сегментированное тело, движение за счёт сокращений, щетинки."}]}]},
+{name:"Моллюски",subs:[{name:"Брюхоногие, двустворчатые",experiments:[{id:"8-5",name:"Моллюски (улитки, раковины)",equip:["живые улитки","раковины двустворчатых","лупа"],steps:["Рассмотреть живую улитку: раковина (закрученная), тело, щупальца, нога.","Наблюдать движение: скольжение по стеклу.","Рассмотреть раковину двустворчатого: створки, место прикрепления мышцы, перламутр.","Сравнить: брюхоногие — цельная раковина; двустворчатые — две створки."],result:"Различия в строении раковин, движение улитки."}]}]},
+{name:"Членистоногие",subs:[{name:"Насекомые",experiments:[{id:"8-6",name:"Внешнее строение насекомого",equip:["майский жук, кузнечик или муха","лупа","препаровальная игла"],steps:["Рассмотреть насекомое: голова, грудь, брюшко.","На голове: усики, глаза, ротовой аппарат.","На груди: 3 пары ног, 2 пары крыльев (у жука — жёсткие надкрылья).","На брюшке: дыхальца (мелкие отверстия по бокам).","Зарисовать."],result:"Три отдела тела, 6 ног, крылья."}]}]},
+{name:"Рыбы",subs:[{name:"Внешнее строение рыб",experiments:[{id:"8-7",name:"Внешнее строение рыбы",equip:["свежая или мороженая рыба","лупа","пинцет"],steps:["Рассмотреть рыбу: форма тела, чешуя, слизь.","Найти отделы: голова, туловище, хвост.","На голове: рот, глаза, ноздри, жаберные крышки.","На теле: плавники (парные — грудные, брюшные; непарные — спинной, анальный, хвостовой).","Снять одну чешую, рассмотреть под лупой (кольца роста)."],result:"Чешуя, плавники, жаберные крышки."}]},{name:"Внутреннее строение рыб",experiments:[{id:"8-8",name:"Внутреннее строение рыбы (препарирование)",equip:["свежая рыба","ножницы","скальпель","пинцет","лупа","кювета"],steps:["Положить рыбу на кювету брюшком вверх.","Сделать разрез от анального отверстия до жаберных крышек, не задевая внутренние органы.","Раздвинуть стенки тела.","Найти: жабры, сердце (маленькое, красное, впереди), печень, желудок, кишечник, плавательный пузырь, почки (тёмные, вдоль позвоночника), гонады (икра/молоки).","Зарисовать схему расположения органов."],result:"Последовательное расположение органов, плавательный пузырь."}]}]},
+{name:"Птицы",subs:[{name:"Перьевой покров",experiments:[{id:"8-9",name:"Перья птицы",equip:["перья курицы/голубя","лупа","микроскоп","предметное стекло"],steps:["Рассмотреть контурное перо: стержень, опахало, бородки.","Рассмотреть пуховое перо: тонкий стержень, пушистые бородки без сцепления.","Положить бородку на предметное стекло, рассмотреть под микроскопом: крючочки на бородках (сцепление).","Сравнить контурное и пуховое перо."],result:"Крючочки, обеспечивающие сцепление бородок у контурного пера."}]}]},
+{name:"Земноводные",subs:[{name:"Внешнее строение",experiments:[{id:"8-10",name:"Внешнее строение лягушки",equip:["живая лягушка или фиксированная","лупа","кювета"],steps:["Рассмотреть лягушку: форма тела, окраска, кожа (влажная, голая).","Найти отделы: голова, туловище, конечности (задние — длиннее, с плавательной перепонкой).","На голове: глаза с веками, ноздри, барабанная перепонка (круглое пятно за глазом).","Наблюдать движение (прыжки, плавание)."],result:"Голая влажная кожа, барабанная перепонка, плавательные перепонки."}]}]}
+]},
+"9":{title:"9 класс",topics:[
+{name:"Опорно-двигательная система",subs:[{name:"Строение костей",experiments:[{id:"9-1",name:"Свойства кости (декальцинация, прокаливание)",equip:["куриные кости","уксус 9%","банка с крышкой","спиртовка или духовка","лупа"],steps:["Опыт с уксусом (за 2–3 дня): положить свежую куриную кость в банку с уксусом, закрыть. Через 2–3 дня кость станет гибкой (кальций растворился). Попробовать согнуть — гнётся.","Опыт с прокаливанием: взять другую кость, прокалить в духовке или на спиртовке (осторожно, проветривать). Органические вещества сгорят. Кость станет хрупкой, легко ломается.","Сравнить: свежая кость — твёрдая и упругая; после уксуса — гибкая; после прокаливания — хрупкая.","Вывод: в кости есть неорганические (твёрдость) и органические (упругость) вещества."],result:"Демонстрация роли органических и неорганических веществ в кости."}]},{name:"Осанка, профилактика нарушений",experiments:[{id:"9-2",name:"Гибкость позвоночника и плоскостопие",equip:["линейка","лист бумаги","вода/краска"],steps:["Гибкость: Встать прямо, ноги вместе. Наклониться вперёд, не сгибая колени, попытаться достать пальцами рук до пола. Измерить расстояние. Оценка: хорошая — достаёт пола; удовлетворительная — до голени; низкая — до колена.","Плоскостопие: Намочить стопу, поставить на лист бумаги. Обвести отпечаток. В норме выемка на внутренней стороне стопы занимает 2/3 ширины; при плоскостопии выемки почти нет."],result:"Оценка гибкости и наличия плоскостопия."},{id:"9-3",name:"Осанка",equip:["стена","линейка"],steps:["Встать спиной к стене, касаясь пятками, ягодицами, лопатками, затылком.","Попросить партнёра проверить: есть ли зазор между поясницей и стеной (в норме — ладонь проходит с трудом).","Оценить симметричность плеч (линейкой измерить высоту плеч от пола)."],result:"Оценка правильности осанки."}]}]},
+{name:"Кровь и кровообращение",subs:[{name:"Работа сердца",experiments:[{id:"9-4",name:"Пульс до и после нагрузки",equip:["секундомер"],steps:["Найти пульс на запястье (лучевая артерия) или на шее (сонная артерия).","В покое посчитать удары за 60 секунд. Записать.","Сделать 20 приседаний в среднем темпе.","Сразу после нагрузки посчитать пульс за 60 секунд. Записать.","Через 2–3 минуты посчитать снова.","Сравнить: пульс после нагрузки должен быть выше, затем постепенно возвращаться к исходному."],result:"Изменение частоты пульса под влиянием нагрузки."}]}]},
+{name:"Дыхательная система",subs:[{name:"Регуляция дыхания",experiments:[{id:"9-5",name:"Частота дыхания",equip:["секундомер"],steps:["В покое посчитать вдохи за 60 секунд (или за 30 секунд × 2). Записать.","Сделать 20 приседаний.","Сразу посчитать частоту дыхания.","Сравнить: после нагрузки дыхание учащается."],result:"Изменение частоты дыхания после нагрузки."}]},{name:"Газообмен в лёгких",experiments:[{id:"9-6",name:"Жизненная ёмкость лёгких (замена спирометра)",equip:["воздушный шарик","линейка","нитка"],steps:["Сделать максимальный вдох.","Выдохнуть весь воздух в шарик за один раз (как можно сильнее).","Завязать шарик ниткой, не выпуская воздух.","Измерить диаметр шарика линейкой.","Сравнить с одноклассниками. Чем больше диаметр — тем больше ЖЁЛ."],result:"Качественная оценка жизненной ёмкости лёгких.",note:"Это качественная оценка, не точное измерение в мл, но позволяет сравнить."}]}]},
+{name:"Пищеварительная система",subs:[{name:"Пищеварение в ротовой полости",experiments:[{id:"9-7",name:"Ферменты слюны на крахмал",equip:["крахмал","вода","пробирки","раствор йода","пипетка","водяная баня","слюна"],steps:["Приготовить крахмальный клейстер: 1 ч.л. крахмала развести в 100 мл холодной воды, довести до кипения (или заварить горячей водой). Остудить.","Налить по 2–3 мл клейстера в две пробирки.","В пробирку 1 добавить 1–2 мл слюны, перемешать. В пробирку 2 — столько же воды (контроль).","Поставить обе пробирки в тёплую воду (37–40°C) на 10–15 минут.","Добавить в каждую по 1–2 капли йода.","Наблюдать: в пробирке 1 (со слюной) цвет не изменится или станет слабо-жёлтым (крахмал расщеплён). В пробирке 2 — синее окрашивание (крахмал остался)."],result:"Исчезновение синего окрашивания под действием слюны."}]},{name:"Обмен веществ и энергии",experiments:[{id:"9-8",name:"Пищевой рацион (расчёт)",equip:["таблицы калорийности продуктов","калькулятор","весы"],steps:["Составить список продуктов, съеденных за день (примерно).","По таблице калорийности найти энергетическую ценность каждого продукта на 100 г.","Пересчитать на съеденное количество, суммировать.","Сравнить с суточной нормой для своего возраста (примерно 2500–2800 ккал для 14–15 лет).","Сделать вывод: достаточно/избыточно/недостаточно."],result:"Оценка соответствия рациона суточной норме калорий."}]}]},
+{name:"Кожа",subs:[{name:"Строение кожи",experiments:[{id:"9-9",name:"Кожа: поры, складки, чувствительность",equip:["лупа"],steps:["Рассмотреть кожу на тыльной стороне кисти под лупой: видны поры, складки, волоски.","Надавить пальцем на кожу — остаётся ямка (эластичность).","Сравнить кожу на ладони и на тыле кисти: где больше складок, где тоньше."],result:"Наблюдение особенностей строения кожи."}]}]},
+{name:"Анализаторы",subs:[{name:"Кожно-мышечная чувствительность",experiments:[{id:"9-10",name:"Температурная и тактильная чувствительность",equip:["три стакана с водой (холодная, комнатная, горячая)","вата","зубочистка"],steps:["Температура: Опустить пальцы одной руки в холодную воду, другой — в горячую. Держать 1–2 минуты. Перенести обе руки в стакан с комнатной водой. Ощущения: рука, бывшая в холодной, почувствует тепло; рука из горячей — холод.","Тактильная: Закрыть глаза. Партнёр касается кожи ватой (лёгкое касание) и зубочисткой (точечное давление) в разных местах (ладонь, тыл кисти, предплечье). Определить, где чувствительность выше, где точки располагаются гуще."],result:"Особенности температурной и тактильной чувствительности."}]},{name:"Зрительный анализатор",experiments:[{id:"9-11",name:"Острота зрения",equip:["таблица Сивцева","линейка"],steps:["Распечатать таблицу Сивцева (или использовать экран с крупными буквами).","Повесить на стену на уровне глаз.","Встать на расстоянии 5 метров.","Закрыть один глаз (не давить), читать буквы сверху вниз, пока не станет трудно различать.","Записать строку, которую прочитал без ошибок. Это соответствует остроте зрения (например, 1.0 — норма).","Повторить для другого глаза."],result:"Определение остроты зрения."},{id:"9-12",name:"Поле зрения",equip:["карандаш или ручка"],steps:["Смотреть прямо перед собой, зафиксировать взгляд на точке на стене.","Держать карандаш сбоку, вне поля зрения.","Медленно двигать карандаш к центру, пока не увидите его боковым зрением (не поворачивая глаз).","Отметить, на каком расстоянии/угле карандаш стал виден.","Повторить с другой стороны, сверху, снизу. Сравнить."],result:"Определение границ поля зрения."}]}]},
+{name:"Высшая нервная деятельность",subs:[{name:"Условные рефлексы",experiments:[{id:"9-13",name:"Условный рефлекс",equip:["звонок (телефон) или лампа","партнёр"],steps:["Выбрать реакцию: например, мигание на звук.","Партнёр звонит в звонок, сразу после — дует в глаз (или касается ресниц).","Повторить 5–7 раз: звонок → дуновение → мигание.","Через несколько повторений: только звонок → мигание (условный рефлекс).","Прекратить подкрепление (звонок без дуновения) — через несколько раз рефлекс угаснет."],result:"Формирование и угасание условного рефлекса."}]},{name:"Память",experiments:[{id:"9-14",name:"Тип памяти",equip:["карточки со словами (10–15) или числами","секундомер"],steps:["Показать карточку со словами на 30 секунд.","Убрать. Записать все слова, которые запомнились.","Посчитать количество.","Сравнить с объёмом кратковременной памяти (в норме 7±2 единицы). Если запомнил больше — хорошая память."],result:"Оценка объёма кратковременной памяти."}]},{name:"Внимание",experiments:[{id:"9-15",name:"Внимание (корректурная проба)",equip:["бланк с текстом","ручка","секундомер"],steps:["Взять бланк с буквами/цифрами.","За 2 минуты вычеркнуть все заданные буквы (например, «А»).","Посчитать: сколько просмотрено, сколько ошибок (пропущено, зачёркнуто не то).","Оценить концентрацию и устойчивость внимания."],result:"Оценка концентрации и устойчивости внимания."}]}]},
+{name:"Здоровье человека",subs:[{name:"Первая помощь",experiments:[{id:"9-16",name:"Первая помощь (кровотечение, перелом)",equip:["бинт","жгут (или ремень)","шины (ветки, картон)","вата/ткань"],steps:["Кровотечение: Наложить жгут выше раны (при артериальном кровотечении), затянуть до остановки крови. Записать время наложения (жгут не более 1 часа зимой, 1,5–2 летом). Наложить давящую повязку при венозном кровотечении.","Перелом: Наложить шину: две ветки/картонки по бокам конечности, зафиксировать бинтом. Шина должна захватывать два сустава — выше и ниже перелома."],result:"Отработка навыков первой помощи."},{id:"9-17",name:"Имитация СЛР",equip:["манекен (если есть) или партнёр"],steps:["Уложить «пострадавшего» на твёрдую поверхность.","Запрокинуть голову, выдвинуть нижнюю челюсть.","Сделать 2 вдоха (имитация на манекене или без контакта).","Начать непрямой массаж сердца: ладони на нижнюю треть грудины, надавливать 30 раз с частотой 100–120 в минуту, глубина 5–6 см.","Чередовать 30:2."],result:"Отработка последовательности действий при СЛР.",note:"Без тренажёра — только отработка последовательности и положения рук на манекене/имитации."}]}]}
+]}
+};
+
+const BAD = ["хуй","хуя","хуе","хуи","бля","блять","блядь","ебать","ебан","ебал","ебло","пизд","пиздец","сука","суки","мудак","мудила","говно","дерьмо","гандон","залупа","fuck","shit","bitch","asshole","dick","cunt"];
+function isBad(t){const s=(t||"").toLowerCase().replace(/[^\wа-яё]/gi," ");return BAD.some(w=>s.includes(w))}
+
+const S = {view:"home", classId:null, topicIdx:null, subIdx:null, selected:new Set(), any:false, exp:null, stack:[]};
+const app = document.getElementById("app");
+const nav = document.getElementById("nav");
+const crumbs = document.getElementById("crumbs");
+const footer = document.getElementById("footer");
+const searchEl = document.getElementById("search");
+
+function allExps(){
+  const list=[];
+  for(const [cid,c] of Object.entries(DATA)){
+    c.topics.forEach((t,ti)=>{
+      t.subs.forEach((s,si)=>{
+        s.experiments.forEach(e=>{
+          list.push({...e, classId:cid, classTitle:c.title, topic:t.name, sub:s.name});
+        });
+      });
+    });
+  }
+  return list;
+}
+function equipOf(cid,ti,si){
+  const set=new Set();
+  (DATA[cid].topics[ti].subs[si].experiments||[]).forEach(e=>e.equip.forEach(x=>set.add(x)));
+  return [...set].sort((a,b)=>a.localeCompare(b,"ru"));
+}
+function match(exps,sel,any){
+  if(any || sel.size===0) return exps;
+  return exps.filter(e=>e.equip.some(x=>sel.has(x)));
+}
+function setCrumbs(parts){
+  crumbs.innerHTML = parts.map((p,i)=> i===parts.length-1 ? `<span>${p}</span>` : p).join(" · ");
+}
+function showNav(v){
+  nav.classList.toggle("show", v);
+  footer.classList.toggle("hidden", v);
+}
+
+function home(){
+  S.view="home"; S.stack=[];
+  showNav(false);
+  app.innerHTML = `
+    <div class="hero">
+      <div class="hero-title">Каталог лабораторных опытов</div>
+      <div class="hero-sub">Выберите класс, чтобы начать</div>
+    </div>
+    <div class="class-grid">
+      ${[5,6,7,8,9].map(n=>`
+        <div class="class-btn" data-c="${n}">
+          <div class="num">${n}</div>
+          <div class="lbl">класс</div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="action-card" id="goReviews">
+      <div class="ico">💬</div>
+      <div class="txt">
+        <h3>Отзывы</h3>
+        <p>Напишите, что думаете о приложении</p>
+      </div>
+    </div>
+  `;
+  document.querySelectorAll(".class-btn").forEach(el=>{
+    el.onclick = ()=>{ S.classId=el.dataset.c; S.stack=["home"]; topics(); };
+  });
+  document.getElementById("goReviews").onclick = ()=>{ S.stack=["home"]; reviews(); };
+}
+
+function topics(){
+  S.view="topics"; S.topicIdx=null;
+  showNav(true);
+  setCrumbs([DATA[S.classId].title]);
+  const list = DATA[S.classId].topics;
+  app.innerHTML = `
+    <div class="section-title">${DATA[S.classId].title}</div>
+    ${list.map((t,i)=>`
+      <div class="card" data-i="${i}">
+        <h3>${t.name}</h3>
+        <div class="arrow">›</div>
+      </div>
+    `).join("")}
+  `;
+  document.querySelectorAll(".card").forEach(el=>{
+    el.onclick = ()=>{ S.topicIdx=+el.dataset.i; S.stack.push("topics"); subs(); };
+  });
+}
+
+function subs(){
+  S.view="subs"; S.subIdx=null;
+  showNav(true);
+  const t = DATA[S.classId].topics[S.topicIdx];
+  setCrumbs([DATA[S.classId].title, t.name]);
+  app.innerHTML = `
+    <div class="section-title">${t.name}</div>
+    ${t.subs.map((s,i)=>`
+      <div class="card" data-i="${i}">
+        <h3>${s.name}</h3>
+        <div class="arrow">›</div>
+      </div>
+    `).join("")}
+  `;
+  document.querySelectorAll(".card").forEach(el=>{
+    el.onclick = ()=>{
+      S.subIdx = +el.dataset.i;
+      S.selected = new Set();
+      S.any = false;
+      S.stack.push("subs");
+      filter();
+    };
+  });
+}
+
+function filter(){
+  S.view="filter";
+  showNav(true);
+  const t = DATA[S.classId].topics[S.topicIdx];
+  const s = t.subs[S.subIdx];
+  setCrumbs([DATA[S.classId].title, t.name, s.name]);
+  const eq = equipOf(S.classId, S.topicIdx, S.subIdx);
+  app.innerHTML = `
+    <div class="chips-wrap">
+      <div class="chips-label">Какое оборудование есть?</div>
+      <div class="chips-hint">Можно выбрать несколько. Достаточно одного совпадения. «Любое» — все опыты этой подтемы.</div>
+      <div class="chips">
+        <div class="chip any ${S.any?"on":""}" data-any="1">✨ Любое</div>
+        ${eq.map(e=>`<div class="chip ${S.selected.has(e)?"on":""}" data-e="${e}">${e}</div>`).join("")}
+      </div>
+      <button class="btn" id="goSearch">Показать опыты</button>
+    </div>
+  `;
+  document.querySelectorAll(".chip").forEach(ch=>{
+    ch.onclick = ()=>{
+      if(ch.dataset.any){
+        S.any = !S.any;
+        if(S.any) S.selected.clear();
+        document.querySelectorAll(".chip:not(.any)").forEach(c=>c.classList.remove("on"));
+      } else {
+        S.any = false;
+        document.querySelector(".chip.any")?.classList.remove("on");
+        const e = ch.dataset.e;
+        if(S.selected.has(e)){ S.selected.delete(e); ch.classList.remove("on"); }
+        else { S.selected.add(e); ch.classList.add("on"); }
+      }
+      ch.classList.toggle("on", ch.dataset.any ? S.any : S.selected.has(ch.dataset.e));
+    };
+  });
+  document.getElementById("goSearch").onclick = ()=>{ S.stack.push("filter"); results(); };
+}
+
+function results(){
+  S.view="results";
+  showNav(true);
+  const t = DATA[S.classId].topics[S.topicIdx];
+  const s = t.subs[S.subIdx];
+  setCrumbs([DATA[S.classId].title, t.name, s.name]);
+  const list = match(s.experiments, S.selected, S.any);
+  if(!list.length){
+    app.innerHTML = `<div class="empty"><div class="ico">🔬</div><p>Нет подходящих опытов.<br>Попробуйте «Любое» или другие предметы.</p></div>`;
+    return;
+  }
+  app.innerHTML = `
+    <div class="section-title">Найдено: ${list.length}</div>
+    ${list.map(e=>`
+      <div class="exp-card" data-id="${e.id}">
+        <h3>${e.name}</h3>
+        <div class="tags">${e.equip.slice(0,5).map(x=>`<span class="tag">${x}</span>`).join("")}${e.equip.length>5?`<span class="tag">+${e.equip.length-5}</span>`:""}</div>
+      </div>
+    `).join("")}
+  `;
+  document.querySelectorAll(".exp-card").forEach(el=>{
+    el.onclick = ()=>{
+      const exp = list.find(x=>x.id===el.dataset.id);
+      S.exp = {...exp, classTitle:DATA[S.classId].title, topic:t.name, sub:s.name};
+      S.stack.push("results");
+      detail();
+    };
+  });
+}
+
+function detail(){
+  S.view="detail";
+  showNav(true);
+  const e = S.exp;
+  setCrumbs([e.classTitle, "Опыт"]);
+  app.innerHTML = `
+    <div class="detail-head">
+      <h2>${e.name}</h2>
+      <div class="path">${e.classTitle} · ${e.topic} · ${e.sub}</div>
+    </div>
+    <div class="block-title">Оборудование</div>
+    <div class="equip-tags">${e.equip.map(x=>`<span class="equip-tag">${x}</span>`).join("")}</div>
+    <div class="block-title">Ход работы</div>
+    ${e.steps.map((st,i)=>`
+      <div class="step">
+        <div class="step-head">
+          <span class="step-num">${i+1}</span>
+          <div class="step-text">${st}</div>
+        </div>
+        <div class="photo-place"><div class="ico">📷</div>Место для фото этапа ${i+1}</div>
+      </div>
+    `).join("")}
+    ${e.result?`<div class="result-box"><strong>Что должно быть видно:</strong><br>${e.result}</div>`:""}
+    ${e.note?`<div class="note-box"><strong>Дополнительно:</strong><br>${e.note}</div>`:""}
+  `;
+}
+
+function doSearch(q){
+  S.view="search";
+  showNav(true);
+  setCrumbs(["Поиск"]);
+  const qq = q.toLowerCase().trim();
+  if(!qq){ home(); return; }
+  const found = allExps().filter(e=>{
+    const str = (e.name+" "+e.topic+" "+e.sub+" "+e.equip.join(" ")).toLowerCase();
+    return str.includes(qq);
+  });
+  if(!found.length){
+    app.innerHTML = `<div class="empty"><div class="ico">🔍</div><p>По запросу «${q}» ничего не найдено</p></div>`;
+    return;
+  }
+  app.innerHTML = `
+    <div class="section-title">Найдено: ${found.length}</div>
+    ${found.map(e=>`
+      <div class="exp-card" data-id="${e.id}">
+        <h3>${e.name}</h3>
+        <div class="meta">${e.classTitle} · ${e.topic}</div>
+        <div class="tags">${e.equip.slice(0,4).map(x=>`<span class="tag">${x}</span>`).join("")}</div>
+      </div>
+    `).join("")}
+  `;
+  document.querySelectorAll(".exp-card").forEach(el=>{
+    el.onclick = ()=>{
+      const exp = found.find(x=>x.id===el.dataset.id);
+      S.exp = exp;
+      S.stack.push("search");
+      detail();
+    };
+  });
+}
+
+const BIN_ID = "6ae8daf6ffd5d16053a04661";
+const MASTER_KEY = "$2a$10$Jh0JGbbexLu1mmbW6.I5xOXL9FoOIEaI.EUwo0yXdBALggbK0hZm.";
+
+async function loadReviews() {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { "X-Master-Key": MASTER_KEY }
+    });
+    if (!res.ok) throw new Error("Ошибка загрузки");
+    const data = await res.json();
+    return Array.isArray(data.record) ? data.record : [];
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
+
+async function saveReviews(list) {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": MASTER_KEY
+      },
+      body: JSON.stringify(list)
+    });
+    return res.ok;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+async function reviews() {
+  S.view = "reviews";
+  showNav(true);
+  setCrumbs(["Отзывы"]);
+
+  app.innerHTML = `
+    <div class="reviews-head">Отзывы</div>
+    <div class="review-form">
+      <div class="err-msg" id="err"></div>
+      <div class="success-msg" id="ok"></div>
+      <input type="text" id="nick" placeholder="Ваш ник (например: Ученик5А)" maxlength="30">
+      <textarea id="txt" placeholder="Напишите отзыв о приложении..." maxlength="500"></textarea>
+      <button class="btn" id="send">Отправить отзыв</button>
+    </div>
+    <div id="list">
+      <div class="empty"><div class="ico">⏳</div><p>Загрузка отзывов...</p></div>
+    </div>
+  `;
+
+  const list = await loadReviews();
+  const listEl = document.getElementById("list");
+
+  if (list.length === 0) {
+    listEl.innerHTML = `<div class="empty"><div class="ico">💬</div><p>Пока нет отзывов.<br>Будьте первым!</p></div>`;
+  } else {
+    listEl.innerHTML = list.slice().reverse().map(r => `
+      <div class="review-item">
+        <div class="author">${esc(r.nick || "")}</div>
+        <div class="date">${r.date || ""}</div>
+        <div class="body">${esc(r.text || "")}</div>
+      </div>
+    `).join("");
+  }
+
+  document.getElementById("send").onclick = async () => {
+    const nick = document.getElementById("nick").value.trim();
+    const text = document.getElementById("txt").value.trim();
+    const err = document.getElementById("err");
+    const ok = document.getElementById("ok");
+    err.style.display = "none";
+    ok.style.display = "none";
+
+    if (!nick || !text) {
+      err.textContent = "Заполните ник и текст отзыва.";
+      err.style.display = "block";
+      return;
+    }
+    if (isBad(nick) || isBad(text)) {
+      err.textContent = "Нельзя отправлять сообщения с нецензурной лексикой.";
+      err.style.display = "block";
+      return;
+    }
+
+    const newReview = {
+      nick,
+      text,
+      date: new Date().toLocaleString("ru-RU", {
+        day: "2-digit", month: "2-digit", year: "numeric",
+        hour: "2-digit", minute: "2-digit"
+      })
+    };
+
+    const currentList = await loadReviews();
+    currentList.push(newReview);
+
+    const success = await saveReviews(currentList);
+    if (success) {
+      ok.textContent = "Отзыв успешно добавлен!";
+      ok.style.display = "block";
+      document.getElementById("nick").value = "";
+      document.getElementById("txt").value = "";
+      setTimeout(() => reviews(), 900);
+    } else {
+      err.textContent = "Не удалось сохранить. Попробуйте ещё раз.";
+      err.style.display = "block";
+    }
+  };
+}
+
+function esc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+document.getElementById("back").onclick = ()=>{
+  if(!S.stack.length){ home(); return; }
+  const prev = S.stack.pop();
+  if(prev==="home") home();
+  else if(prev==="topics") topics();
+  else if(prev==="subs") subs();
+  else if(prev==="filter") filter();
+  else if(prev==="results") results();
+  else if(prev==="search"){
+    const q = searchEl.value;
+    if(q.trim()) doSearch(q); else home();
+  } else home();
+};
+
+let tmr;
+searchEl.addEventListener("input", e=>{
+  clearTimeout(tmr);
+  tmr = setTimeout(()=>{
+    const q = e.target.value;
+    if(q.trim().length >= 2){
+      S.stack = ["home"];
+      doSearch(q);
+    } else if(!q.trim() && S.view==="search") home();
+  }, 280);
+});
+
+home();
+</script>
+</body>
+</html>
